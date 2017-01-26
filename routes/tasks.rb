@@ -148,24 +148,47 @@ post '/tasks/create' do
     flash[:error] = 'No hashcat binary path is defined in global settings.'
     redirect to('/settings')
   end
-  
-  if !params[:name] || params[:name].empty?
-    flash[:error] = 'You must provide a name for your task!'
-    redirect to('/tasks/create')
-  end
-  
-  @tasks = Tasks.all(name: params[:name])
-  unless @tasks.nil?
-    @tasks.each do |task|
-      if task.name == params[:name]
-        flash[:error] = 'Name already in use, pick another'
-        redirect to('/tasks/create')
+
+  # this isnt required anymore now that we dynamically create task name
+  # if !params[:name] || params[:name].empty?
+  #   flash[:error] = 'You must provide a name for your task!'
+  #   redirect to('/tasks/create')
+  # end
+
+  wordlist = Wordlists.first(id: params[:wordlist])
+
+  # dynamically build a task name
+  if params[:attackmode] == 'dictionary'
+    taskname = params[:attackmode] + wordlist.name + params[:rule]
+  elsif params[:attackmode] == 'maskmode'
+    taskname = params[:attackmode] + params[:mask]
+  elsif params[:attackmode] == 'combinator'
+    combinator_wordlists = []
+    params.each do |param|
+      if param =~ /combinator_wordlist_\d+/
+        puts "param in a comnbinator wordlist: #{param}"
+        combinator_wordlists << param
       end
     end
+    taskname = params[:attackmode] + "(" + combinator_wordlists[0] + combinator_wordlists[1] + ")"# + params[:combinator_left_rule] + params[:combinator_right_rule]
+  elsif params[:attackmode] == 'bruteforce'
+    taskname = params[:attackmode]
   end
+  puts "taskname:"
+  puts taskname
+
+  # TODO edit this task to run after we determined dynamic name
+  # @tasks = Tasks.all(name: params[:name])
+  # unless @tasks.nil?
+  #   @tasks.each do |task|
+  #     if task.name == params[:name]
+  #       flash[:error] = 'Name already in use, pick another'
+  #       redirect to('/tasks/create')
+  #     end
+  #   end
+  # end
  
-  wordlist = Wordlists.first(id: params[:wordlist])
-  
+
   # mask field cannot be empty
   if params[:attackmode] == 'maskmode'
     if !params[:mask] || params[:mask].empty?
@@ -210,7 +233,7 @@ post '/tasks/create' do
   end
   
   task = Tasks.new
-  task.name = params[:name]
+  task.name = taskname
 
   task.hc_attackmode = params[:attackmode]
  
