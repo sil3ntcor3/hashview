@@ -159,18 +159,23 @@ post '/tasks/create' do
 
   # dynamically build a task name
   if params[:attackmode] == 'dictionary'
-    taskname = params[:attackmode] + wordlist.name + params[:rule]
+    if params[:rule].nil?
+      taskname = params[:attackmode] + " wordlist: " + wordlist.name
+    else
+      taskname = params[:attackmode] + " wordlist: " + wordlist.name + " rule: " + params[:rule]
+    end
   elsif params[:attackmode] == 'maskmode'
-    taskname = params[:attackmode] + params[:mask]
+    taskname = params[:attackmode] + " " + params[:mask]
   elsif params[:attackmode] == 'combinator'
     combinator_wordlists = []
-    params.each do |param|
+    params.keys.each do |param|
       if param =~ /combinator_wordlist_\d+/
-        puts "param in a comnbinator wordlist: #{param}"
-        combinator_wordlists << param
+        wordlist_id = param.split('_')[2]
+        w = Wordlists.first(id: wordlist_id.to_i)
+        combinator_wordlists << w.name
       end
     end
-    taskname = params[:attackmode] + "(" + combinator_wordlists[0] + combinator_wordlists[1] + ")"# + params[:combinator_left_rule] + params[:combinator_right_rule]
+    taskname = params[:attackmode] + " (wordlists: " + combinator_wordlists[0] + "," + combinator_wordlists[1] + ") " + "left rule: " + params[:combinator_left_rule] + " right rule: " + params[:combinator_right_rule]
   elsif params[:attackmode] == 'bruteforce'
     taskname = params[:attackmode]
   end
@@ -215,7 +220,7 @@ post '/tasks/create' do
         end
       end
     end
-  
+
     if wordlist_count != 2
       flash[:error] = 'You must specify at exactly 2 wordlists.'
       redirect to('/tasks/create')
@@ -235,6 +240,7 @@ post '/tasks/create' do
   task = Tasks.new
   task.name = taskname
 
+  puts "this should insert"
   task.hc_attackmode = params[:attackmode]
  
   if params[:attackmode] == 'dictionary'
@@ -246,6 +252,7 @@ post '/tasks/create' do
     task.wl_id = wordlist_list
     task.hc_rule = rule_list
   end
+  puts task
   task.save
   
   flash[:success] = "Task #{task.name} successfully created."

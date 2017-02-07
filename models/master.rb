@@ -153,7 +153,7 @@ class Tasks
   include DataMapper::Resource
 
   property :id, Serial
-  property :name, String
+  property :name, String, length: 255
   property :source, String
   property :mask, String
   property :command, String, length: 4000
