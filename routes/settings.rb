@@ -79,7 +79,7 @@ post '/settings' do
 
     # Sanity Check for opencl-device-types
     if params[:opencl_device_types]
-      if params[:opencl_device_types] == '0' || params[:opencl_device_types] == '1' || params[:opencl_device_types] == '2' || params[:opencl_device_types] == '3'
+      if params[:opencl_device_types] == '0' || params[:opencl_device_types] == '1' || params[:opencl_device_types] == '2' || params[:opencl_device_types] == '3'|| params[:opencl_device_types] == '1,2'
         hc_settings.opencl_device_types = params[:opencl_device_types].to_i
       else
         flash[:error] = 'Invalid value for --opencl-device-types'
