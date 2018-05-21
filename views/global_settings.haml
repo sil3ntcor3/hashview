@@ -74,21 +74,31 @@
                   %option{value: '1', name: 'opencl_device_types', type: 'button', selected: 'selected'} 1 - CPU
                   %option{value: '2', name: 'opencl_device_types', type: 'button'} 2 - GPU
                   %option{value: '3', name: 'opencl_device_types', type: 'button'} 3 - FPGA, DSP, Co-Processor
+                  %option{value: '1,2', name: 'opencl_device_types', type: 'button'} 1,2 - CPU & GPU
                 - elsif @hc_settings.opencl_device_types.to_s == '2'
                   %option{value: '0', name: 'opencl_device_types', type: 'button'} unset
                   %option{value: '1', name: 'opencl_device_types', type: 'button'} 1 - CPU
                   %option{value: '2', name: 'opencl_device_types', type: 'button', selected: 'selected'} 2 - GPU
                   %option{value: '3', name: 'opencl_device_types', type: 'button'} 3 - FPGA, DSP, Co-Processor
+                  %option{value: '1,2', name: 'opencl_device_types', type: 'button'} 1,2 - CPU & GPU
                 - elsif @hc_settings.opencl_device_types.to_s == '3'
                   %option{value: '0', name: 'opencl_device_types', type: 'button'} unset
                   %option{value: '1', name: 'opencl_device_types', type: 'button'} 1 - CPU
                   %option{value: '2', name: 'opencl_device_types', type: 'button'} 2 - GPU
                   %option{value: '3', name: 'opencl_device_types', type: 'button', selected: 'selected'} 3 - FPGA, DSP, Co-Processor
+                  %option{value: '1,2', name: 'opencl_device_types', type: 'button'} 1,2 - CPU & GPU
+                - elsif @hc_settings.opencl_device_types.to_s == '1,2'
+                  %option{value: '0', name: 'opencl_device_types', type: 'button'} unset
+                  %option{value: '1', name: 'opencl_device_types', type: 'button'} 1 - CPU
+                  %option{value: '2', name: 'opencl_device_types', type: 'button'} 2 - GPU
+                  %option{value: '3', name: 'opencl_device_types', type: 'button'} 3 - FPGA, DSP, Co-Processor
+                  %option{value: '3', name: 'opencl_device_types', type: 'button', selected: 'selected'} 1,2 - CPU & GPU
                 - else
                   %option{value: '0', name: 'opencl_device_types', type: 'button', selected: 'selected'} unset
                   %option{value: '1', name: 'opencl_device_types', type: 'button'} 1 - CPU
                   %option{value: '2', name: 'opencl_device_types', type: 'button'} 2 - GPU
                   %option{value: '3', name: 'opencl_device_types', type: 'button'} 3 - FPGA, DSP, Co-Processor
+                  %option{value: '1,2', name: 'opencl_device_types', type: 'button'} 1,2 - CPU & GPU
           .form-group
             %label.control-label.col-xs-2{for: ''} --workload-profile (-w)
             .col-xs-3
